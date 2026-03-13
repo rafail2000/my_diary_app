@@ -1,0 +1,24 @@
+<div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom box-shadow">
+    <h5 class="my-0 mr-md-auto font-weight-normal">MyDiary</h5>
+    <nav class="ms-5">
+        {% if user.is_authenticated %}
+        <form method="get" action="{% url 'diary:diary_list' %}" class="form-floating d-inline-flex align-items-center">
+            {% csrf_token %}
+            <div class="mb-3 me-2">
+                <input type="text" name="diary_name" class="form-control" id="diary_name" placeholder="Введите название ключевые слова для поиска в записях" required>
+            </div>
+            <button type="submit" class="btn btn-outline-primary mb-3">Найти</button>
+        </form>
+        <a class="p-2 btn btn-outline-primary" href="{% url 'diary:diary_list' %}">Мои записи</a>
+        <a class="p-2 btn btn-outline-primary" href="{% url 'diary:diary_create' %}">Добавить запись</a>
+        <form method="post" action="{% url 'users:logout' %}" style="display: inline;">
+            {% csrf_token %}
+            <button type="submit" class="p-2 btn btn-outline-primary">Выйти</button>
+        </form>
+        <form method="post" action="{% url 'users:user_edit' user.pk %}" style="display: inline;">
+            {% csrf_token %}
+            <button type="submit" class="p-2 btn btn-outline-primary">Редактировать профиль</button>
+        </form>
+        {% endif %}
+    </nav>
+</div>
