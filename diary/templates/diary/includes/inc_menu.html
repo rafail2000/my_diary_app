@@ -5,7 +5,7 @@
         <form method="get" action="{% url 'diary:diary_list' %}" class="form-floating d-inline-flex align-items-center">
             {% csrf_token %}
             <div class="mb-3 me-2">
-                <input type="text" name="diary_name" class="form-control" id="diary_name" placeholder="Введите название ключевые слова для поиска в записях" required>
+                <input type="text" name="search_word" class="form-control" id="search_word" placeholder="Введите название категории" required>
             </div>
             <button type="submit" class="btn btn-outline-primary mb-3">Найти</button>
         </form>

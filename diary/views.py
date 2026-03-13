@@ -4,6 +4,7 @@ from django.views.generic import CreateView, DetailView, ListView, UpdateView, D
 
 from diary.forms import DiaryForm
 from diary.models import Diary
+from diary.services import get_title_or_content_list
 
 
 class DiaryCreateView(LoginRequiredMixin, CreateView):
@@ -43,9 +44,8 @@ class DiaryListView(LoginRequiredMixin, ListView):
     context_object_name = 'records'
 
     def get_queryset(self):
-        queryset = super().get_queryset()
-        return queryset
-
+        search_word = self.request.GET.get('search_word')
+        return get_title_or_content_list(search_word)
 
 class DiaryUpdateView(LoginRequiredMixin, UpdateView):
     """
