@@ -1,13 +1,59 @@
 {% extends 'diary/base.html' %}
 
-{% block tite %}Login{% endblock %}
+{% block title %}Вход{% endblock %}
 
 {% block content %}
-<h2>Вход на сайт</h2>
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit" class="btn btn-primary">Войти</button>
-    <a class="p-2 btn btn-outline-primary" href="{% url 'users:register' %}">Регистрация</a>
-</form>
+<div style="max-width: 400px; margin: 40px auto; padding: 0 15px;">
+    <h2 style="margin-bottom: 24px; font-weight: 400;">Вход на сайт</h2>
+
+    <form method="post">
+        {% csrf_token %}
+
+        {% if form.non_field_errors %}
+            <div style="color: #dc3545; margin-bottom: 16px; font-size: 14px;">
+                {{ form.non_field_errors.0 }}
+            </div>
+        {% endif %}
+
+        <div style="margin-bottom: 16px;">
+            <label for="{{ form.username.id_for_label }}" style="display: block; margin-bottom: 4px; font-size: 14px;">
+                Email
+            </label>
+            <input type="email"
+                   name="{{ form.username.name }}"
+                   id="{{ form.username.id_for_label }}"
+                   value="{{ form.username.value|default:'' }}"
+                   style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box;">
+            {% if form.username.errors %}
+                <div style="color: #dc3545; font-size: 13px; margin-top: 4px;">
+                    {{ form.username.errors.0 }}
+                </div>
+            {% endif %}
+        </div>
+
+        <div style="margin-bottom: 24px;">
+            <label for="{{ form.password.id_for_label }}" style="display: block; margin-bottom: 4px; font-size: 14px;">
+                Пароль
+            </label>
+            <input type="password"
+                   name="{{ form.password.name }}"
+                   id="{{ form.password.id_for_label }}"
+                   style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box;">
+            {% if form.password.errors %}
+                <div style="color: #dc3545; font-size: 13px; margin-top: 4px;">
+                    {{ form.password.errors.0 }}
+                </div>
+            {% endif %}
+        </div>
+
+        <div style="display: flex; gap: 8px;">
+            <button type="submit" style="padding: 8px 16px; background: #000; color: white; border: none; border-radius: 4px; cursor: pointer;">
+                Войти
+            </button>
+            <a href="{% url 'users:register' %}" style="padding: 8px 16px; background: #f8f9fa; color: #000; text-decoration: none; border-radius: 4px;">
+                Регистрация
+            </a>
+        </div>
+    </form>
+</div>
 {% endblock %}

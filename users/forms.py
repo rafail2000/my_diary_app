@@ -1,4 +1,4 @@
-from django.contrib.auth.forms import UserCreationForm, UserChangeForm
+from django.contrib.auth.forms import UserCreationForm, UserChangeForm, AuthenticationForm
 from django import forms
 
 from diary.forms import StyleFormMixin
@@ -21,7 +21,10 @@ class UserRegisterForm(StyleFormMixin, UserCreationForm):
                     '<li>• Пароль должен содержать минимум 8 символов</li>'
                     '<li>• Пароль не должен быть слишком простым и распространённым</li>'
                     '<li>• Пароль не должен состоять только из цифр</li>'
-                    '</ul>'
+                    '</ul>',
+        error_messages={
+            "required": "Это поле обязательно для заполнения.",
+        }
     )
 
     password2 = forms.CharField(
@@ -30,7 +33,11 @@ class UserRegisterForm(StyleFormMixin, UserCreationForm):
             "class": "form-control",
             "placeholder": "Подтвердите пароль"
         }),
-        help_text="Введите тот же пароль ещё раз для проверки."
+        help_text="Введите тот же пароль ещё раз для проверки.",
+        error_messages={
+            "required": "Это поле обязательно для заполнения.",
+            "password_mismatch": "Пароли не совпадают.",
+        }
     )
 
     class Meta:
@@ -46,20 +53,26 @@ class UserRegisterForm(StyleFormMixin, UserCreationForm):
                 "placeholder": "Введите номер телефона (необязательно)"
             }),
         }
+        error_messages = {
+            "email": {
+                "required": "Это поле обязательно для заполнения.",
+                "invalid": "Введите корректный email адрес."
+            }
+        }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields["phone_number"].required = False
 
-        self.fields["password1"].error = {
+        self.fields["password1"].error_messages.update({
             "password_too_short": "Пароль должен содержать минимум 8 символов.",
             "password_to_common": "Пароль не должен быть слишком простым и распространённым.",
             "password_too_common": "Пароль не должен состоять только из цифр.",
             "password_too_similar": "Пароль не должен быть слишком похож на другие ваши личные данные.",
-        }
-        self.fields["password2"].error_messages = {
+        })
+        self.fields["password2"].error_messages.update({
             "password_mismatch": "Пароли не совпадают.",
-        }
+        })
 
     def clean_email(self):
         """
@@ -70,6 +83,39 @@ class UserRegisterForm(StyleFormMixin, UserCreationForm):
         if User.objects.filter(email=email).exists():
             raise forms.ValidationError("Пользователь с таким email уже существует")
         return email
+
+
+class UserLoginForm(StyleFormMixin, AuthenticationForm):
+    """
+    Форма для логирования пользователя
+    """
+
+    username = forms.EmailField(
+        label="Email",
+        widget=forms.EmailInput(attrs={
+            "class": "form-control",
+            "placeholder": "Введите ваш email",
+            "autofocus": True,
+        })
+    )
+
+    password = forms.CharField(
+        label="Пароль",
+        widget=forms.PasswordInput(attrs={
+            "class": "form-control",
+            "placeholder": "Введите ваш пароль"
+        })
+    )
+
+    error_messages = {
+        "invalid_login": "Пожалуйста, введите правильные Email и пароль. Оба поля могут быть чувствительны к регистру.",
+        "inactive": "Этот аккаунт неактивен. Пожалуйста, обратитесь к администратору."
+    }
+
+    def confirm_login_allowed(self, user):
+        """
+        Переопределение сообщения для неактивного аккаунта
+        """
 
 
 class UserUpdateForm(UserChangeForm):

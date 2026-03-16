@@ -1,19 +1,30 @@
 {% extends 'diary/base.html' %}
 
 {% block content %}
-<div class="container">
-   <div class="col">
-      <div class="card mb-4 rounded-3 shadow-sm">
-         <div class="card-header py-3">
-            <h4 class="my-0 fw-normal">{{ diary.title }}</h4>
-         </div>
-         <div class="card-body">
-            <h1 class="card-title pricing-card-title">{{ record.content }}</h1>
-            <p>{{ diary.content }}</p>
-            <a href="{% url 'diary:diary_edit' record.pk %}" class="btn btn-secondary">Редактировать</a>
-            <a href="{% url 'diary:diary_delete' record.pk %}" class="btn btn-danger">Удалить</a>
-         </div>
-      </div>
-   </div>
+<div style="max-width: 600px; margin: 40px auto; padding: 0 15px;">
+       <!-- Кнопка назад -->
+    <div style="margin-bottom: 20px;">
+        <a href="{% url 'diary:diary_list' %}" style="color: #666; text-decoration: none; display: inline-flex; align-items: center;">
+            <span style="margin-right: 5px;">←</span> Назад к записям
+        </a>
+    </div>
+
+    <article>
+        <h1 style="font-size: 32px; font-weight: 400; margin-bottom: 10px;">{{ record.title }}</h1>
+        <div style="color: #999; margin-bottom: 30px; font-size: 14px;">
+            {{ record.publication_date|date:"d M Y" }}
+        </div>
+
+        <div style="line-height: 1.8; margin-bottom: 40px;">
+            {{ record.content|linebreaks }}
+        </div>
+
+        {% if user == record.user %}
+        <div style="border-top: 1px solid #eee; padding-top: 20px;">
+            <a href="{% url 'diary:diary_edit' record.pk %}" style="color: #000; margin-right: 15px;">Редактировать</a>
+            <a href="{% url 'diary:diary_delete' record.pk %}" style="color: #dc3545;" onclick="return confirm('Удалить?')">Удалить</a>
+        </div>
+        {% endif %}
+    </article>
 </div>
 {% endblock %}

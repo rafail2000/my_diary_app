@@ -1,90 +1,61 @@
 {% extends 'diary/base.html' %}
 
 {% block content %}
-<div class="row row-cols-1 row-cols-md-3 mb-3 text-center">
-  {% for record in records %}
-   <div class="col">
-      <div class="card mb-4 rounded-3 shadow-sm">
-         <div class="card-header py-3">
-            <h4 class="my-0 fw-normal">{{ record.title }}</h4>
-         </div>
-         <div class="card-body">
-            <h1 class="card-title pricing-card-title">{{ record.user }}<small class="text-body-secondary fw-light">/руб.</small></h1>
-               <p>{{ record.content|truncatechars:100 }}</p>
-            <a href="{% url 'diary:diary_item' record.id %}"
-               class="w-100 btn btn-lg btn-outline-primary">
-               Подробнее
-            </a>
-            {% if user == diary.user %}
-            <a href="{% url 'diary:diary_item' record.id %}"
-               class="w-100 btn btn-lg btn-outline-primary">
-               Редактировать
-            </a>
-             <a href="{% url 'diary:diary_delete' record.id %}"
-               class="w-100 btn btn-lg btn-outline-primary">
-               Удалить
-            </a>
-            {% endif %}
-         </div>
-      </div>
-   </div>
-  {% empty %}
-  <div class="col-12">
-    <div class="alert alert-info text-center">
-      Записей в дневнике пока нет
+<div style="max-width: 800px; margin: 0 auto; padding: 20px;">
+    <!-- Заголовок -->
+    <div style="margin-bottom: 30px;">
+        <h2 style="margin: 0 0 20px 0; font-weight: 400;">Мои записи</h2>
+        <a href="{% url 'diary:diary_create' %}"
+           style="display: inline-block; padding: 8px 16px; background: #000; color: white; text-decoration: none; border-radius: 4px;">
+            + Новая запись
+        </a>
     </div>
-  </div>
-  {% endfor %}
-</div>
 
-<!-- ПАГИНАЦИЯ -->
-{% if is_paginated %}
-<div class="pagination d-flex justify-content-center mt-4">
-    <nav aria-label="Навигация по страницам">
-        <ul class="pagination">
-            {% if page_obj.has_previous %}
-                <li class="page-item">
-                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}">
-                        &laquo; Назад
-                    </a>
-                </li>
-            {% else %}
-                <li class="page-item disabled">
-                    <span class="page-link">&laquo; Назад</span>
-                </li>
+    <!-- Список записей -->
+    {% for record in records %}
+    <div style="margin-bottom: 15px; padding: 20px; background: white; border: 1px solid #eee; border-radius: 4px;">
+        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 10px;">
+            <h3 style="margin: 0; font-size: 18px;">{{ record.title }}</h3>
+            <span style="font-size: 12px; color: #999;">{{ record.publication_date|date:"d.m.Y" }}</span>
+        </div>
+
+        <p style="color: #666; margin: 0 0 15px 0;">{{ record.content|truncatechars:200 }}</p>
+
+        <div style="display: flex; gap: 10px;">
+            <a href="{% url 'diary:diary_item' record.id %}" style="color: #000;">Читать</a>
+
+            {% if user == record.user %}
+            <span style="color: #ddd;">|</span>
+            <a href="{% url 'diary:diary_edit' record.id %}" style="color: #000;">Редактировать</a>
+            <span style="color: #ddd;">|</span>
+            <a href="{% url 'diary:diary_delete' record.id %}"
+               style="color: #dc3545;"
+               onclick="return confirm('Удалить запись?')">
+                Удалить
+            </a>
             {% endif %}
+        </div>
+    </div>
+    {% empty %}
+    <div style="text-align: center; padding: 40px; background: #f8f9fa; border-radius: 4px;">
+        <p style="margin: 0 0 15px 0; color: #666;">У вас пока нет записей</p>
+        <a href="{% url 'diary:diary_create' %}" style="color: #000;">Создать первую запись</a>
+    </div>
+    {% endfor %}
 
-            {% for num in page_obj.paginator.page_range %}
-                {% if page_obj.number == num %}
-                    <li class="page-item active">
-                        <span class="page-link">{{ num }}</span>
-                    </li>
-                {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
-                    <li class="page-item">
-                        <a class="page-link" href="?page={{ num }}">{{ num }}</a>
-                    </li>
-                {% endif %}
-            {% endfor %}
+    <!-- Простая пагинация -->
+    {% if is_paginated %}
+    <div style="margin-top: 30px; text-align: center;">
+        {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}" style="margin-right: 10px;">←</a>
+        {% endif %}
 
-            {% if page_obj.has_next %}
-                <li class="page-item">
-                    <a class="page-link" href="?page={{ page_obj.next_page_number }}">
-                        Вперед &raquo;
-                    </a>
-                </li>
-            {% else %}
-                <li class="page-item disabled">
-                    <span class="page-link">Вперед &raquo;</span>
-                </li>
-            {% endif %}
-        </ul>
-    </nav>
+        <span>Стр. {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}</span>
+
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}" style="margin-left: 10px;">→</a>
+        {% endif %}
+    </div>
+    {% endif %}
 </div>
-
-<!-- Информация о странице -->
-<div class="text-center text-muted mt-2">
-    Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}
-    | Показано товаров: {{ page_obj.start_index }} - {{ page_obj.end_index }} из {{ page_obj.paginator.count }}
-</div>
-{% endif %}
 {% endblock %}

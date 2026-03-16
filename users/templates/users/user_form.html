@@ -1,13 +1,94 @@
 {% extends 'diary/base.html' %}
 
-{% block tite %}Регистрация{% endblock %}
+{% block title %}Регистрация{% endblock %}
 
 {% block content %}
-<h2>Регистрация</h2>
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit" class="btn btn-primary">Регистрация</button>
-    <a class="p-2 btn btn-outline-primary" href="{% url 'users:login' %}">Назад</a>
-</form>
+<div style="max-width: 400px; margin: 40px auto; padding: 0 15px;">
+    <h2 style="margin-bottom: 24px; font-weight: 400;">Регистрация</h2>
+
+    <form method="post">
+        {% csrf_token %}
+
+        {% if form.non_field_errors %}
+            <div style="color: #dc3545; margin-bottom: 16px; font-size: 14px;">
+                {{ form.non_field_errors.0 }}
+            </div>
+        {% endif %}
+
+        <!-- Email -->
+        <div style="margin-bottom: 16px;">
+            <label for="{{ form.email.id_for_label }}" style="display: block; margin-bottom: 4px; font-size: 14px;">
+                Email
+            </label>
+            <input type="email"
+                   name="{{ form.email.name }}"
+                   id="{{ form.email.id_for_label }}"
+                   value="{{ form.email.value|default:'' }}"
+                   style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box;">
+            {% if form.email.errors %}
+                <div style="color: #dc3545; font-size: 13px; margin-top: 4px;">
+                    {{ form.email.errors.0 }}
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Телефон -->
+        <div style="margin-bottom: 16px;">
+            <label for="{{ form.phone_number.id_for_label }}" style="display: block; margin-bottom: 4px; font-size: 14px;">
+                Телефон <span style="color: #999;">(необязательно)</span>
+            </label>
+            <input type="text"
+                   name="{{ form.phone_number.name }}"
+                   id="{{ form.phone_number.id_for_label }}"
+                   value="{{ form.phone_number.value|default:'' }}"
+                   style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box;">
+        </div>
+
+        <!-- Пароль -->
+        <div style="margin-bottom: 16px;">
+            <label for="{{ form.password1.id_for_label }}" style="display: block; margin-bottom: 4px; font-size: 14px;">
+                Пароль
+            </label>
+            <input type="password"
+                   name="{{ form.password1.name }}"
+                   id="{{ form.password1.id_for_label }}"
+                   style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box;">
+            {% if form.password1.errors %}
+                <div style="color: #dc3545; font-size: 13px; margin-top: 4px;">
+                    {{ form.password1.errors.0 }}
+                </div>
+            {% endif %}
+            {% if form.password1.help_text %}
+                <div style="font-size: 12px; color: #666; margin-top: 4px;">
+                    {{ form.password1.help_text|safe }}
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Подтверждение пароля -->
+        <div style="margin-bottom: 24px;">
+            <label for="{{ form.password2.id_for_label }}" style="display: block; margin-bottom: 4px; font-size: 14px;">
+                Подтверждение пароля
+            </label>
+            <input type="password"
+                   name="{{ form.password2.name }}"
+                   id="{{ form.password2.id_for_label }}"
+                   style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box;">
+            {% if form.password2.errors %}
+                <div style="color: #dc3545; font-size: 13px; margin-top: 4px;">
+                    {{ form.password2.errors.0 }}
+                </div>
+            {% endif %}
+        </div>
+
+        <div style="display: flex; gap: 8px;">
+            <button type="submit" style="padding: 8px 16px; background: #000; color: white; border: none; border-radius: 4px; cursor: pointer;">
+                Зарегистрироваться
+            </button>
+            <a href="{% url 'users:login' %}" style="padding: 8px 16px; background: #f8f9fa; color: #000; text-decoration: none; border-radius: 4px;">
+                Назад
+            </a>
+        </div>
+    </form>
+</div>
 {% endblock %}
