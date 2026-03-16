@@ -74,6 +74,7 @@
                    name="{{ form.password2.name }}"
                    id="{{ form.password2.id_for_label }}"
                    style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box;">
+
             {% if form.password2.errors %}
                 <div style="color: #dc3545; font-size: 13px; margin-top: 4px;">
                     {{ form.password2.errors.0 }}

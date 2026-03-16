@@ -64,15 +64,17 @@ class UserRegisterForm(StyleFormMixin, UserCreationForm):
         super().__init__(*args, **kwargs)
         self.fields["phone_number"].required = False
 
-        self.fields["password1"].error_messages.update({
-            "password_too_short": "Пароль должен содержать минимум 8 символов.",
-            "password_to_common": "Пароль не должен быть слишком простым и распространённым.",
-            "password_too_common": "Пароль не должен состоять только из цифр.",
-            "password_too_similar": "Пароль не должен быть слишком похож на другие ваши личные данные.",
-        })
-        self.fields["password2"].error_messages.update({
-            "password_mismatch": "Пароли не совпадают.",
-        })
+        self.fields["password1"].error_messages = {
+            'required': 'Это поле обязательно для заполнения.',
+            'password_too_short': 'Пароль должен содержать минимум 8 символов.',
+            'password_too_common': 'Пароль не должен быть слишком простым и распространённым.',
+            'password_entirely_numeric': 'Пароль не должен состоять только из цифр.',
+            'password_too_similar': 'Пароль не должен быть слишком похож на другие ваши личные данные.',
+        }
+        self.fields["password2"].error_messages = {
+            'required': 'Это поле обязательно для заполнения.',
+            'password_mismatch': 'Пароли не совпадают.',
+        }
 
     def clean_email(self):
         """
