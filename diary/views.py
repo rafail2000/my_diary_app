@@ -18,6 +18,10 @@ class DiaryCreateView(LoginRequiredMixin, CreateView):
     template_name = 'diary/diary_form.html'
     success_url = reverse_lazy('diary:diary_list')
 
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
+
 
 class DiaryDetailView(LoginRequiredMixin, DetailView):
     """

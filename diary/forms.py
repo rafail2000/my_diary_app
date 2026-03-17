@@ -24,4 +24,4 @@ class DiaryForm(StyleFormMixin, ModelForm):
 
     class Meta:
         model = Diary
-        fields = '__all__'
+        exclude = ["user",]
