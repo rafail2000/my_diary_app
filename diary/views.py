@@ -7,6 +7,7 @@ from diary.models import Diary
 from diary.services import get_title_or_content_list
 
 
+
 class DiaryCreateView(LoginRequiredMixin, CreateView):
     """
     Курсор для создания записи
@@ -45,7 +46,8 @@ class DiaryListView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         search_word = self.request.GET.get('search_word')
-        return get_title_or_content_list(search_word)
+        queryset = get_title_or_content_list(search_word)
+        return queryset.filter(user=self.request.user)
 
 class DiaryUpdateView(LoginRequiredMixin, UpdateView):
     """
