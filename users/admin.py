@@ -5,4 +5,8 @@ from users.models import User
 
 @admin.register(User)
 class AuthorAdmin(admin.ModelAdmin):
-    exclude = ('password',)
+    """
+    Админка в django для пользователей
+    """
+
+    exclude = ("password",)

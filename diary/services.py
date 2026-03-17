@@ -13,4 +13,4 @@ def get_title_or_content_list(search_word=None):
     if search_word:
         data = data.filter(Q(title__icontains=search_word) | Q(content__icontains=search_word))
 
-    return data.order_by('-publication_date')
+    return data.order_by("-publication_date")
